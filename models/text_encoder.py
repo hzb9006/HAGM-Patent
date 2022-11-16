@@ -5,7 +5,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
-
+# todo:再次学习一下lstm和GRU，并且学习使用
 class GRU(nn.Module):
     def __init__(self,
                  layers,
@@ -93,13 +93,13 @@ class TextEncoder(nn.Module):
             output_dim=config.text_encoder.RNN.hidden_dimension,
             batch_first=True,
             bidirectional=config.text_encoder.RNN.bidirectional
-        )
+        ) # 使用bilstm 进行文本的编码 batch_first如果为True，则输入和输出的tensors的维度为(batch,seq,feature)而不是(seq,batch,feature)。注意：此标识只对output有效，对hidden state 和 cell state无效，默认为False
         hidden_dimension = config.text_encoder.RNN.hidden_dimension
         if config.text_encoder.RNN.bidirectional:
             hidden_dimension *= 2
         self.kernel_sizes = config.text_encoder.CNN.kernel_size
-        self.convs = torch.nn.ModuleList()
-        for kernel_size in self.kernel_sizes:
+        self.convs = torch.nn.ModuleList() #加载模块列表
+        for kernel_size in self.kernel_sizes: # 自然语言处理中一个句子序列，一维的，所以使用Conv1d
             self.convs.append(torch.nn.Conv1d(
                 hidden_dimension,
                 config.text_encoder.CNN.num_kernel,

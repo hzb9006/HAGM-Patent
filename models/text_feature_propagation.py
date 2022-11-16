@@ -40,15 +40,15 @@ class HiAGMTP(nn.Module):
         :param text_feature ->  torch.FloatTensor, (batch_size, K0, text_dim)
         :return: logits ->  torch.FloatTensor, (batch, N)
         """
-        text_feature = torch.cat(text_feature, 1)
+        text_feature = torch.cat(text_feature, 1) # 三个卷积提取出来的文本特征为3个（64，1，100）-->cat-->(64,3,100)-->view-->(64,300)每行是一句话的向量-->linear-->(64,141*300)映射为141个标签对应的向量--
         text_feature = text_feature.view(text_feature.shape[0], -1)
 
-        text_feature = self.transformation_dropout(self.transformation(text_feature))
+        text_feature = self.transformation_dropout(self.transformation(text_feature)) # 这是线性层
         text_feature = text_feature.view(text_feature.shape[0],
                                          len(self.label_map),
-                                         self.config.model.linear_transformation.node_dimension)
+                                         self.config.model.linear_transformation.node_dimension) # 64，141，300--文本映射为标签的向量
 
-        label_wise_text_feature = self.graph_model(text_feature)
+        label_wise_text_feature = self.graph_model(text_feature) # 使用标签解码器进行训练
 
         logits = self.dropout(self.linear(label_wise_text_feature.view(label_wise_text_feature.shape[0], -1)))
         return logits

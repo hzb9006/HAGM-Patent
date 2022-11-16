@@ -23,14 +23,14 @@ class HierarchyGCN(nn.Module):
         original GCN paper:
                 Kipf, T. N., & Welling, M. (2016). Semi-supervised classification with graph convolutional networks.
                     arXiv preprint arXiv:1609.02907.
-        :param num_nodes: int, N
-        :param in_matrix: numpy.Array(N, N), input adjacent matrix for child2parent (bottom-up manner)
-        :param out_matrix: numpy.Array(N, N), output adjacent matrix for parent2child (top-down manner)
-        :param in_dim: int, the dimension of each node <- config.structure_encoder.node.dimension
-        :param layers: int, the number of layers <- config.structure_encoder.num_layer
+        :param num_nodes: int, N 节点数量n
+        :param in_matrix: numpy.Array(N, N), input adjacent matrix for child2parent (bottom-up manner) 子节点到父节点的概率矩阵
+        :param out_matrix: numpy.Array(N, N), output adjacent matrix for parent2child (top-down manner) 父节点到子节点的概率矩阵
+        :param in_dim: int, the dimension of each node <- config.structure_encoder.node.dimension  每一个节点的维度
+        :param layers: int, the number of layers <- config.structure_encoder.num_layer 每一层的数量
         :param time_step: int, the number of time steps <- config.structure_encoder.time_step
         :param dropout: Float, P value for dropout module <- configure.structure_encoder.node.dropout
-        :param prob_train: Boolean, train the probability matrix if True <- config.structure_encoder.prob_train
+        :param prob_train: Boolean, train the probability matrix if True <- config.structure_encoder.prob_train # true:训练概率矩阵
         :param device: torch.device <- config.train.device_setting.device
         """
         super(HierarchyGCN, self).__init__()
@@ -74,7 +74,7 @@ class HierarchyGCNModule(nn.Module):
         assert in_arc or out_arc
         #  bottom-up child sum
         in_prob = in_adj
-        self.adj_matrix = Parameter(torch.Tensor(in_prob))
+        self.adj_matrix = Parameter(torch.Tensor(in_prob)) #
         self.edge_bias = Parameter(torch.Tensor(num_nodes, in_dim))
         self.gate_weight = Parameter(torch.Tensor(in_dim, 1))
         self.bias_gate = Parameter(torch.Tensor(num_nodes, 1))
@@ -103,21 +103,21 @@ class HierarchyGCNModule(nn.Module):
         :param inputs: torch.FloatTensor, (batch_size, N, in_dim)
         :return: message_ -> torch.FloatTensor (batch_size, N, in_dim)
         """
-        h_ = inputs  # batch, N, in_dim
-        message_ = torch.zeros_like(h_).to(self.device)  # batch, N, in_dim
+        h_ = inputs  # batch, N, in_dim 这是文本特征
+        message_ = torch.zeros_like(h_).to(self.device)  # batch, N, in_dim 这是文本特征
 
-        h_in_ = torch.matmul(self.origin_adj * self.adj_matrix, h_)  # batch, N, in_dim
+        h_in_ = torch.matmul(self.origin_adj * self.adj_matrix,h_)  # batch, N, in_dim
         in_ = h_in_ + self.edge_bias
-        in_ = in_
+        in_ = in_ # 第一个公式
         # N,1,dim
         in_gate_ = torch.matmul(h_, self.gate_weight)
         # N, 1
         in_gate_ = in_gate_ + self.bias_gate
-        in_ = in_ * F.sigmoid(in_gate_)
+        in_ = in_ * F.sigmoid(in_gate_)  # 第二个公式：F.sigmoid(in_gate_)  第三个公式 ： in_ = in_ * F.sigmoid(in_gate_)
         in_ = self.dropout(in_)
-        message_ += in_  # batch, N, in_dim
+        message_ += in_  # batch, N, in_dim  此时message是考虑了子节点到父节点概率的节点编码
 
-        h_output_ = torch.matmul(self.origin_adj.transpose(0, 1) * self.out_adj_matrix, h_)
+        h_output_ = torch.matmul(self.origin_adj.transpose(0, 1) * self.out_adj_matrix, h_) # self.origin_adj.transpose(0, 1) 转换张量的维度，origin_adj本来是子节点到父节点的概率，数值为0，1的tensor,转换维度就成了父到子的邻接矩阵，乘积之后，子标签会融合父标签的信息
         out_ = h_output_ + self.out_edge_bias
         out_gate_ = torch.matmul(h_, self.out_gate_weight)
         out_gate_ = out_gate_ + self.out_bias_gate

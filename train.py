@@ -15,6 +15,17 @@ from helper.utils import load_checkpoint, save_checkpoint
 import time
 
 
+#  以下是pycallgraph的库
+from pycallgraph import PyCallGraph
+from pycallgraph.output import GraphvizOutput
+from pycallgraph import Config as pycallgraphConfig
+from pycallgraph import GlobbingFilter
+
+# 以下是模块可视化的库
+import torch.onnx
+import netron
+
+
 def set_optimizer(config, model):
     """
     :param config: helper.configure, Configure Object
@@ -33,17 +44,18 @@ def train(config):
     """
     :param config: helper.configure, Configure Object
     """
-    # loading corpus and generate vocabulary
+    # 1. loading corpus and generate vocabulary--这个词表是哪里来的？
     corpus_vocab = Vocab(config,
                          min_freq=5,
                          max_size=50000)
 
-    # get data
-    train_loader, dev_loader, test_loader = data_loaders(config, corpus_vocab)
+    # 2. get data
+    train_loader, dev_loader, test_loader = data_loaders(config, corpus_vocab) # 加载数据，其实内部使用了继承Dataset的自定义数据集类和DataLoader
 
-    # build up model
+    # 3. build up model
     hiagm = HiAGM(config, corpus_vocab, model_type=config.model.type, model_mode='TRAIN')
     hiagm.to(config.train.device_setting.device)
+
     # define training objective & optimizer
     criterion = ClassificationLoss(os.path.join(config.data.data_dir, config.data.hierarchy),
                                    corpus_vocab.v2i['label'],
@@ -154,7 +166,9 @@ def train(config):
                         config=config,
                         optimizer=optimize)
         trainer.eval(test_loader, best_epoch[1], 'TEST')
-
+    logger.info("此处输出本次运行的模型信息{}".format(n for n in hiagm.modules()))
+    for n in hiagm.modules():
+        print(n)
     return
 
 
@@ -171,5 +185,7 @@ if __name__ == "__main__":
 
     if not os.path.isdir(configs.train.checkpoint.dir):
         os.mkdir(configs.train.checkpoint.dir)
-
     train(configs)
+
+
+    

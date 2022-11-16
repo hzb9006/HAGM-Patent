@@ -12,8 +12,8 @@ class Collator(object):
         :param vocab: data_modules.vocab, Vocab Object
         """
         super(Collator, self).__init__()
-        self.device = config.train.device_setting.device
-        self.label_size = len(vocab.v2i['label'].keys())
+        self.device = config.train.device_setting.device # device:cuda
+        self.label_size = len(vocab.v2i['label'].keys()) # 获取标签的长度
 
     def _multi_hot(self, batch_labels):
         """

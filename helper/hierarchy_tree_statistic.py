@@ -1,13 +1,18 @@
 #!/usr/bin/env python
 # coding:utf-8
-
 import os
-from models.structure_model.tree import Tree
+import sys
+curPath = os.path.abspath(os.path.dirname(__file__))
+rootPath = os.path.split(curPath)[0]
+sys.path.append(rootPath)
+
+
 import json
 import copy
 from collections import defaultdict
-from helper.configure import Configure
-import sys
+from configure import Configure
+from models.structure_model.tree import Tree
+
 
 ROOT_LABEL = 'Root'
 
@@ -115,7 +120,7 @@ class DatasetStatistic(object):
     def get_data_statistic(self, file_name):
         all_label_num = 0
         label_num_dict = dict()
-        f = open(file_name, 'r')
+        f = open(file_name, 'r',encoding='utf-8')
         data = f.readlines()
         f.close()
         count_data = len(data)
@@ -209,13 +214,13 @@ def prior_probs(prob_dict):
 if __name__ == '__main__':
     configs = Configure(config_json_file=sys.argv[1])
 
-    rcv1_dataset_statistic = DatasetStatistic(configs)
+    wos_dataset_statistic = DatasetStatistic(configs)
     # rcv1_dataset_statistic.get_taxonomy_file()
-    train_statistics = rcv1_dataset_statistic.get_data_statistic(
+    train_statistics = wos_dataset_statistic.get_data_statistic(
         os.path.join(configs.data.data_dir, configs.data.train_file))
-    val_statistics = rcv1_dataset_statistic.get_data_statistic(
+    val_statistics = wos_dataset_statistic.get_data_statistic(
         os.path.join(configs.data.data_dir, configs.data.val_file))
-    test_statistics = rcv1_dataset_statistic.get_data_statistic(
+    test_statistics = wos_dataset_statistic.get_data_statistic(
         os.path.join(configs.data.data_dir, configs.data.test_file))
 
     print('*****TRAIN*****')
@@ -230,12 +235,12 @@ if __name__ == '__main__':
 
     # check_rcv1_level_data()
     print('*****TOTAL*****')
-    print(rcv1_dataset_statistic.prior_prob_dict)
-    print(prior_probs(rcv1_dataset_statistic.prior_prob_dict))
+    print(wos_dataset_statistic.prior_prob_dict)
+    print(prior_probs(wos_dataset_statistic.prior_prob_dict))
     print('*****TOTAL TRAIN*****')
-    print(rcv1_dataset_statistic.total_train_prob_dict)
-    print(prior_probs(rcv1_dataset_statistic.total_train_prob_dict))
-    train_probs = prior_probs(rcv1_dataset_statistic.total_train_prob_dict)
+    print(wos_dataset_statistic.total_train_prob_dict)
+    print(prior_probs(wos_dataset_statistic.total_train_prob_dict))
+    train_probs = prior_probs(wos_dataset_statistic.total_train_prob_dict)
     with open(os.path.join(configs.data.data_dir, configs.data.prob_json), 'w') as json_file:
         json_str = json.dumps(train_probs)
         json_file.write(json_str)

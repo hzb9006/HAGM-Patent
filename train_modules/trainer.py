@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # coding:utf-8
+import netron
 
 import helper.logger as logger
 from train_modules.evaluation_metrics import evaluate
 import torch
 import tqdm
+import numpy as np
+
 
 
 class Trainer(object):
@@ -49,14 +52,14 @@ class Trainer(object):
         num_batch = data_loader.__len__()
 
         for batch in tqdm.tqdm(data_loader):
-            logits = self.model(batch)
-            if self.config.train.loss.recursive_regularization.flag:
+            logits = self.model(batch)  # model(input) 等同于 model.forward(input)
+            if self.config.train.loss.recursive_regularization.flag:  # 是否使用正则化项
                 recursive_constrained_params = self.model.hiagm.linear.weight
             else:
                 recursive_constrained_params = None
             loss = self.criterion(logits,
                                   batch['label'].to(self.config.train.device_setting.device),
-                                  recursive_constrained_params)
+                                  recursive_constrained_params)  # BCEWithlogitsLoss+考虑父子节点参数差异的正则化项
             total_loss += loss.item()
 
             if mode == 'TRAIN':
@@ -67,6 +70,7 @@ class Trainer(object):
             predict_probs.extend(predict_results)
             target_labels.extend(batch['label_list'])
         total_loss = total_loss / num_batch
+
         if mode == 'EVAL':
             metrics = evaluate(predict_probs,
                                target_labels,
@@ -82,6 +86,7 @@ class Trainer(object):
                            metrics['precision'], metrics['recall'], metrics['micro_f1'], metrics['macro_f1'],
                            total_loss))
             return metrics
+
 
     def train(self, data_loader, epoch):
         """

@@ -68,7 +68,7 @@ def get_hierarchy_relations(hierar_taxonomy, label_map, root=None, fortree=False
 
                 for child in children_label_ids:
                     assert (child + 1) not in label_tree
-                    child_tree = Tree(child)
+                    child_tree = Tree(child) # Tree初始化索引idx,父标签,子标签和子标签的数量
                     parent_tree.add_child(child_tree)
                     label_tree[child + 1] = child_tree
     if fortree:

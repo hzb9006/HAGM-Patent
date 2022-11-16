@@ -44,15 +44,15 @@ class HiAGM(nn.Module):
             pretrained_dir=config.embedding.token.pretrained_file,
             model_mode=model_mode,
             initial_type=config.embedding.token.init_type
-        )
+        ) # 自定义embedding层对数据进行embedding，使用了预训练词嵌入
 
         self.dataflow_type = DATAFLOW_TYPE[model_type]
 
-        self.text_encoder = TextEncoder(config)
+        self.text_encoder = TextEncoder(config) # 实例化文本编码器，双向的GRU和CNN
         self.structure_encoder = StructureEncoder(config=config,
                                                   label_map=vocab.v2i['label'],
                                                   device=self.device,
-                                                  graph_model_type=config.structure_encoder.type)
+                                                  graph_model_type=config.structure_encoder.type) # 结构编码器，也就是层级GCN
 
         if self.dataflow_type == 'serial':
             self.hiagm = HiAGMTP(config=config,
@@ -99,6 +99,7 @@ class HiAGM(nn.Module):
 
         token_output = self.text_encoder(embedding, seq_len)
 
-        logits = self.hiagm(token_output)
+        logits = self.hiagm(token_output) # 通过标签关系对文本特征进行更新
+
 
         return logits

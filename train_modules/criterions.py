@@ -32,18 +32,18 @@ class ClassificationLoss(torch.nn.Module):
         :param device: torch.device -> config.train.device_setting.device
         :return: loss -> torch.FloatTensor, ()
         """
-        rec_reg = 0.0
-        for i in range(len(params)):
+        rec_reg = 0.0 # 对应论文4.4节的Lr
+        for i in range(len(params)): # 取出每个标签的参数--
             if i not in self.recursive_relation.keys():
                 continue
-            child_list = self.recursive_relation[i]
+            child_list = self.recursive_relation[i] # 这是父节点到子节点的层次信息
             if not child_list:
                 continue
-            child_list = torch.tensor(child_list).to(device)
-            child_params = torch.index_select(params, 0, child_list)
+            child_list = torch.tensor(child_list).to(device) # 获取父节点为i，字节点的列表
+            child_params = torch.index_select(params, 0, child_list) # 通过选择索引然后去得到想要的tensor,针对比较长的tensor
             parent_params = torch.index_select(params, 0, torch.tensor(i).to(device))
-            parent_params = parent_params.repeat(child_params.shape[0], 1)
-            _diff = parent_params - child_params
+            parent_params = parent_params.repeat(child_params.shape[0], 1) # 父节点的参数复制子节点数量的个数，并且拼接在一起，如本来是（1，42300）-->(17,42300)
+            _diff = parent_params - child_params #父节点的参数-每一个子节点的参数
             diff = _diff.view(_diff.shape[0], -1)
             rec_reg += 1.0 / 2 * torch.norm(diff, p=2) ** 2
         return rec_reg
@@ -58,7 +58,7 @@ class ClassificationLoss(torch.nn.Module):
         if self.recursive_constraint:
             loss = self.loss_fn(logits, targets) + \
                    self.recursive_penalty * self._recursive_regularization(recursive_params,
-                                                                           device)
+                                                                           device) # 损失函数加上了正则化项
         else:
             loss = self.loss_fn(logits, targets)
         return loss

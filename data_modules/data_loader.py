@@ -15,15 +15,15 @@ def data_loaders(config, vocab, data={'train': None, 'val': None, 'test': None})
     :return: -> (torch.utils.data.DataLoader, torch.utils.data.DataLoader, torch.utils.data.DataLoader)
     """
     on_memory = data['train'] is not None
-    collate_fn = Collator(config, vocab)
-    train_dataset = ClassificationDataset(config, vocab, stage='TRAIN', on_memory=on_memory, corpus_lines=data['train'])
+    collate_fn = Collator(config, vocab) # 初始化Collator类为对象，属性为device:cuda,label_size=141
+    train_dataset = ClassificationDataset(config, vocab, stage='TRAIN', on_memory=on_memory, corpus_lines=data['train']) #ClassificationDataset是我们自定读取数据的方式，继承于Dataset， 实例化ClassificationDataset类为对象
     train_loader = DataLoader(train_dataset,
                               batch_size=config.train.batch_size,
                               shuffle=True,
                               num_workers=config.train.device_setting.num_workers,
                               collate_fn=collate_fn,
-                              pin_memory=True)
-
+                              pin_memory=True) # torch.utils.data.DataLoader 主要是对数据进行 batch 的划分。使用DataLoader的好处是，可以快速的迭代数据。
+# 除此之外，特别要注意的是输入进函数的数据一定得是可迭代的。如果是自定的数据集的话可以在定义类中用def__len__、def__getitem__定义。
     val_dataset = ClassificationDataset(config, vocab, stage='VAL', on_memory=on_memory, corpus_lines=data['val'])
     val_loader = DataLoader(val_dataset,
                             batch_size=config.eval.batch_size,

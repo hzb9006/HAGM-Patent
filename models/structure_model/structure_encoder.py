@@ -32,7 +32,7 @@ class StructureEncoder(nn.Module):
         super(StructureEncoder, self).__init__()
 
         self.label_map = label_map
-        self.root = Tree(-1)
+        self.root = Tree(-1) # 构建标签的树形结构
 
         self.hierarchical_label_dict, self.label_trees = get_hierarchy_relations(os.path.join(config.data.data_dir,
                                                                                               config.data.hierarchy),
@@ -53,7 +53,7 @@ class StructureEncoder(nn.Module):
             for c in self.hierarchy_prob[p].keys():
                 # self.hierarchy_id_prob[self.label_map[p]][self.label_map[c]] = self.hierarchy_prob[p][c]
                 self.node_prob_from_child[int(self.label_map[p])][int(self.label_map[c])] = 1.0
-                self.node_prob_from_parent[int(self.label_map[c])][int(self.label_map[p])] = self.hierarchy_prob[p][c]
+                self.node_prob_from_parent[int(self.label_map[c])][int(self.label_map[p])] = self.hierarchy_prob[p][c] # 父节点到子节点的概率 todo: 此处有问题，不符合我们的直觉，父标签到子标签的概率是列到行的概率
         #  node_prob_from_parent: row means parent, col refers to children
 
         self.model = MODEL_MODULE[graph_model_type](num_nodes=len(self.label_map),
@@ -64,7 +64,7 @@ class StructureEncoder(nn.Module):
                                                     device=device,
                                                     root=self.root,
                                                     hierarchical_label_dict=self.hierarchical_label_dict,
-                                                    label_trees=self.label_trees)
+                                                    label_trees=self.label_trees) # GCN的知识点，后续补
 
     def forward(self, inputs):
         return self.model(inputs)

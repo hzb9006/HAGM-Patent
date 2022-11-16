@@ -55,7 +55,53 @@ def clean_str(string):
     string = re.sub(r"\s{2,}", " ", string)
     return string.strip().lower()
 
-stats = {'Root': {'CS': 0, 'Medical': 0, 'Civil': 0, 'ECE': 0, 'biochemistry': 0, 'MAE': 0, 'Psychology': 0}, 'CS': {'Symbolic computation': 402, 'Computer vision': 432, 'Computer graphics': 412, 'Operating systems': 380, 'Machine learning': 398, 'Data structures': 392, 'network security': 445, 'Image processing': 415, 'Parallel computing': 443, 'Distributed computing': 403, 'Algorithm design': 379, 'Computer programming': 425, 'Relational databases': 377, 'Software engineering': 416, 'Bioinformatics': 365, 'Cryptography': 387, 'Structured Storage': 43}, 'Medical': {"Alzheimer's Disease": 368, "Parkinson's Disease": 298, 'Sprains and Strains': 142, 'Cancer': 359, 'Sports Injuries': 365, 'Senior Health': 118, 'Multiple Sclerosis': 253, 'Hepatitis C': 288, 'Weight Loss': 327, 'Low Testosterone': 305, 'Fungal Infection': 372, 'Diabetes': 353, 'Parenting': 343, 'Birth Control': 335, 'Heart Disease': 291, 'Allergies': 357, 'Menopause': 371, 'Emergency Contraception': 291, 'Skin Care': 339, 'Myelofibrosis': 198, 'Hypothyroidism': 315, 'Headache': 341, 'Overactive Bladder': 340, 'Irritable Bowel Syndrome': 336, 'Polycythemia Vera': 148, 'Atrial Fibrillation': 294, 'Smoking Cessation': 257, 'Lymphoma': 267, 'Asthma': 317, 'Bipolar Disorder': 260, "Crohn's Disease": 198, 'Idiopathic Pulmonary Fibrosis': 246, 'Mental Health': 222, 'Dementia': 237, 'Rheumatoid Arthritis': 188, 'Osteoporosis': 320, 'Medicare': 255, 'Psoriatic Arthritis': 202, 'Addiction': 309, 'Atopic Dermatitis': 262, 'Digestive Health': 95, 'Healthy Sleep': 129, 'Anxiety': 262, 'Psoriasis': 128, 'Ankylosing Spondylitis': 321, "Children's Health": 350, 'Stress Management': 361, 'HIV/AIDS': 358, 'Depression': 130, 'Migraine': 178, 'Osteoarthritis': 305, 'Hereditary Angioedema': 182, 'Kidney Health': 90, 'Autism': 309, 'Schizophrenia': 38, 'Outdoor Health': 2}, 'Civil': {'Green Building': 418, 'Water Pollution': 446, 'Smart Material': 363, 'Ambient Intelligence': 410, 'Construction Management': 412, 'Suspension Bridge': 395, 'Geotextile': 419, 'Stealth Technology': 148, 'Solar Energy': 384, 'Remote Sensing': 384, 'Rainwater Harvesting': 441, 'Transparent Concrete': 3, 'Highway Network System': 4, 'Nano Concrete': 7, 'Bamboo as a Building Material': 2, 'Underwater Windmill': 1}, 'ECE': {'Electric motor': 372, 'Satellite radio': 148, 'Digital control': 426, 'Microcontroller': 413, 'Electrical network': 392, 'Electrical generator': 240, 'Electricity': 447, 'Operational amplifier': 419, 'Analog signal processing': 407, 'State space representation': 344, 'Signal-flow graph': 274, 'Electrical circuits': 375, 'Lorentz force law': 44, 'System identification': 417, 'PID controller': 429, 'Voltage law': 54, 'Control engineering': 276, 'Single-phase electric power': 6}, 'biochemistry': {'Molecular biology': 746, 'Enzymology': 576, 'Southern blotting': 510, 'Northern blotting': 699, 'Human Metabolism': 622, 'Polymerase chain reaction': 750, 'Immunology': 652, 'Genetics': 566, 'Cell biology': 552, 'DNA/RNA sequencing': 14}, 'MAE': {'Fluid mechanics': 386, 'Hydraulics': 402, 'computer-aided design': 371, 'Manufacturing engineering': 346, 'Machine design': 420, 'Thermodynamics': 361, 'Materials Engineering': 289, 'Strength of materials': 335, 'Internal combustion engine': 387}, 'Psychology': {'Prenatal development': 389, 'Attention': 416, 'Eating disorders': 387, 'Borderline personality disorder': 376, 'Prosocial behavior': 388, 'False memories': 362, 'Problem-solving': 360, 'Prejudice': 389, 'Antisocial personality disorder': 368, 'Nonverbal communication': 394, 'Leadership': 350, 'Child abuse': 404, 'Gender roles': 395, 'Depression': 380, 'Social cognition': 397, 'Seasonal affective disorder': 365, 'Person perception': 391, 'Media violence': 296, 'Schizophrenia': 335}}
+
+stats = {'Root': {'CS': 0, 'Medical': 0, 'Civil': 0, 'ECE': 0, 'biochemistry': 0, 'MAE': 0, 'Psychology': 0},
+         'CS': {'Symbolic computation': 402, 'Computer vision': 432, 'Computer graphics': 412, 'Operating systems': 380,
+                'Machine learning': 398, 'Data structures': 392, 'network security': 445, 'Image processing': 415,
+                'Parallel computing': 443, 'Distributed computing': 403, 'Algorithm design': 379,
+                'Computer programming': 425, 'Relational databases': 377, 'Software engineering': 416,
+                'Bioinformatics': 365, 'Cryptography': 387, 'Structured Storage': 43},
+         'Medical': {"Alzheimer's Disease": 368, "Parkinson's Disease": 298, 'Sprains and Strains': 142, 'Cancer': 359,
+                     'Sports Injuries': 365, 'Senior Health': 118, 'Multiple Sclerosis': 253, 'Hepatitis C': 288,
+                     'Weight Loss': 327, 'Low Testosterone': 305, 'Fungal Infection': 372, 'Diabetes': 353,
+                     'Parenting': 343, 'Birth Control': 335, 'Heart Disease': 291, 'Allergies': 357, 'Menopause': 371,
+                     'Emergency Contraception': 291, 'Skin Care': 339, 'Myelofibrosis': 198, 'Hypothyroidism': 315,
+                     'Headache': 341, 'Overactive Bladder': 340, 'Irritable Bowel Syndrome': 336,
+                     'Polycythemia Vera': 148, 'Atrial Fibrillation': 294, 'Smoking Cessation': 257, 'Lymphoma': 267,
+                     'Asthma': 317, 'Bipolar Disorder': 260, "Crohn's Disease": 198,
+                     'Idiopathic Pulmonary Fibrosis': 246, 'Mental Health': 222, 'Dementia': 237,
+                     'Rheumatoid Arthritis': 188, 'Osteoporosis': 320, 'Medicare': 255, 'Psoriatic Arthritis': 202,
+                     'Addiction': 309, 'Atopic Dermatitis': 262, 'Digestive Health': 95, 'Healthy Sleep': 129,
+                     'Anxiety': 262, 'Psoriasis': 128, 'Ankylosing Spondylitis': 321, "Children's Health": 350,
+                     'Stress Management': 361, 'HIV/AIDS': 358, 'Depression': 130, 'Migraine': 178,
+                     'Osteoarthritis': 305, 'Hereditary Angioedema': 182, 'Kidney Health': 90, 'Autism': 309,
+                     'Schizophrenia': 38, 'Outdoor Health': 2},
+         'Civil': {'Green Building': 418, 'Water Pollution': 446, 'Smart Material': 363, 'Ambient Intelligence': 410,
+                   'Construction Management': 412, 'Suspension Bridge': 395, 'Geotextile': 419,
+                   'Stealth Technology': 148, 'Solar Energy': 384, 'Remote Sensing': 384, 'Rainwater Harvesting': 441,
+                   'Transparent Concrete': 3, 'Highway Network System': 4, 'Nano Concrete': 7,
+                   'Bamboo as a Building Material': 2, 'Underwater Windmill': 1},
+         'ECE': {'Electric motor': 372, 'Satellite radio': 148, 'Digital control': 426, 'Microcontroller': 413,
+                 'Electrical network': 392, 'Electrical generator': 240, 'Electricity': 447,
+                 'Operational amplifier': 419, 'Analog signal processing': 407, 'State space representation': 344,
+                 'Signal-flow graph': 274, 'Electrical circuits': 375, 'Lorentz force law': 44,
+                 'System identification': 417, 'PID controller': 429, 'Voltage law': 54, 'Control engineering': 276,
+                 'Single-phase electric power': 6},
+         'biochemistry': {'Molecular biology': 746, 'Enzymology': 576, 'Southern blotting': 510,
+                          'Northern blotting': 699, 'Human Metabolism': 622, 'Polymerase chain reaction': 750,
+                          'Immunology': 652, 'Genetics': 566, 'Cell biology': 552, 'DNA/RNA sequencing': 14},
+         'MAE': {'Fluid mechanics': 386, 'Hydraulics': 402, 'computer-aided design': 371,
+                 'Manufacturing engineering': 346, 'Machine design': 420, 'Thermodynamics': 361,
+                 'Materials Engineering': 289, 'Strength of materials': 335, 'Internal combustion engine': 387},
+         'Psychology': {'Prenatal development': 389, 'Attention': 416, 'Eating disorders': 387,
+                        'Borderline personality disorder': 376, 'Prosocial behavior': 388, 'False memories': 362,
+                        'Problem-solving': 360, 'Prejudice': 389, 'Antisocial personality disorder': 368,
+                        'Nonverbal communication': 394, 'Leadership': 350, 'Child abuse': 404, 'Gender roles': 395,
+                        'Depression': 380, 'Social cognition': 397, 'Seasonal affective disorder': 365,
+                        'Person perception': 391, 'Media violence': 296, 'Schizophrenia': 335}}
+
+
 # 1-10 ['Electric motor', 'Satellite radio', 'Single-phase electric power']
 # 4-4 ['Water Pollution', 'Bamboo as a Building Material', 'Underwater Windmill']
 # 6-1 ['Cell biology', 'DNA/RNA sequencing']
@@ -67,7 +113,7 @@ stats = {'Root': {'CS': 0, 'Medical': 0, 'Civil': 0, 'ECE': 0, 'biochemistry': 0
 # 5-17 ['Digestive Health', 'Outdoor Health']
 
 def get_data_from_meta():
-    f = open(FILE_DIR, 'r')
+    f = open(FILE_DIR, 'r', encoding='utf-16')
     origin_txt = f.readlines()
     f.close()
     data = []
@@ -105,7 +151,7 @@ def get_data_from_meta():
         doc = [word.lower() for word in doc.split() if word not in english_stopwords and len(word) > 1]
         sample_text = doc
         total_len.append(len(sample_text))
-        data.append({'doc_token': sample_text, 'doc_label': sample_label, 'doc_topic': [], 'doc_keyword': []})
+        data.append({'token': sample_text, 'label': sample_label, 'topic': [], 'keyword': []})
     print(label_check)
     c = 0
     for i in label_check.keys():
@@ -157,7 +203,7 @@ def get_hierarchy():
     for line in data:
         line = line.rstrip('\n')
         line = json.loads(line)
-        line = line['doc_label']
+        line = line['label']
         if line[0] in label_hierarchy:
             if line[1] not in label_hierarchy[line[0]]:
                 label_hierarchy[line[0]].append(line[1])
@@ -177,4 +223,3 @@ if __name__ == '__main__':
     get_data_from_meta()
     get_hierarchy()
     split_train_dev_test()
-

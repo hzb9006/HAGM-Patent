@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # coding:utf-8
-
+import os
+import sys
+curPath = os.path.abspath(os.path.dirname(__file__))
+rootPath = os.path.split(curPath)[0]
+sys.path.append(rootPath)
 
 import json
-import os
-import helper.logger as logger
+from helper import logger
 
 
 class Configure(object):
@@ -14,8 +17,9 @@ class Configure(object):
         :param config: Dict, change specified configure
         :param config_json_file: conf.json, json.load(f)
         """
+
         if config_json_file:
-            assert os.path.isfile(config_json_file), "Error: Configure file not exists!!"
+            # assert os.path.isfile(config_json_file), "Error: Configure file not exists!!"
             with open(config_json_file, 'r') as fin:
                 self.dict = json.load(fin)
             self.update(self.dict)
